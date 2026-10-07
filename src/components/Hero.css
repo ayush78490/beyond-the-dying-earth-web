@@ -1,0 +1,388 @@
+.hero {
+  --u: calc(var(--img-s, 1) * 1px);
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  min-height: 560px;
+  overflow: hidden;
+  background: #04050d;
+  isolation: isolate;
+  /* held above the journey stage while the camera pushes into the portal */
+  z-index: 2;
+}
+
+/* the painting, positioned exactly like the WebGL frame */
+.hero__plate {
+  position: absolute;
+  left: var(--img-x, 0);
+  top: var(--img-y, 0);
+  width: calc(1672 * var(--u));
+  max-width: none;
+  height: auto;
+  transform-origin: 50% 40%;
+  user-select: none;
+}
+
+.hero__stage {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 40%;
+  will-change: transform;
+}
+.hero__canvas {
+  position: absolute !important;
+  inset: 0;
+}
+
+/* legibility: a soft dusk behind the copy (also hides the retouched title area) */
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      calc(560 * var(--u)) calc(330 * var(--u)) at calc(var(--img-x) + 560 * var(--u)) calc(var(--img-y) + 300 * var(--u)),
+      rgba(4, 5, 18, 0.5),
+      rgba(4, 5, 18, 0.28) 50%,
+      transparent 78%
+    ),
+    linear-gradient(180deg, rgba(3, 4, 12, 0.35) 0%, transparent 16%),
+    linear-gradient(0deg, rgba(3, 4, 11, 0.35) 0%, transparent 28%);
+}
+
+/* the push into the portal: speed-darkened edges + the portal's swelling light */
+.hero__vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(60% 60% at var(--rift-x, 75%) var(--rift-y, 35%), transparent 20%, rgba(20, 4, 30, 0.85) 100%);
+}
+.hero__streaks {
+  position: absolute;
+  z-index: 3;
+  width: 220vmax;
+  height: 220vmax;
+  margin: -110vmax 0 0 -110vmax;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    repeating-conic-gradient(from 0deg, transparent 0deg 3.2deg, rgba(255, 190, 255, 0.55) 3.35deg, transparent 3.6deg 6.1deg),
+    repeating-conic-gradient(from 1.7deg, transparent 0deg 4.6deg, rgba(140, 220, 255, 0.4) 4.7deg, transparent 4.9deg 8.3deg);
+  -webkit-mask: radial-gradient(circle, transparent 3%, #000 12%, #000 30%, transparent 50%);
+  mask: radial-gradient(circle, transparent 3%, #000 12%, #000 30%, transparent 50%);
+  will-change: transform, opacity;
+}
+.hero__rift {
+  position: absolute;
+  z-index: 3;
+  width: 40vmax;
+  height: 40vmax;
+  margin: -20vmax 0 0 -20vmax;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle, #ffffff 0%, #ffe6ff 14%, #f07bff 32%, #a12fe0 52%, rgba(60, 10, 90, 0.6) 70%, transparent 76%);
+  will-change: transform, opacity;
+}
+
+/* ---------- copy (desktop: anchored where the key art's typography was) ---------- */
+.hero__copy {
+  position: absolute;
+  z-index: 4;
+  left: calc(var(--img-x) + 152 * var(--u));
+  top: max(calc(var(--nav-h) + 6px), calc(var(--img-y) + 84 * var(--u)));
+  width: calc(800 * var(--u));
+}
+.js-motion .hero__title {
+  visibility: hidden; /* until the letters are split, then revealed */
+}
+
+.hero__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 0.9;
+}
+
+.hero__title-line {
+  display: flex;
+  align-items: baseline;
+  white-space: nowrap;
+}
+
+.hero__title-line--1 {
+  --grad: linear-gradient(180deg, #ffffff 30%, #e6defc 70%, #c7b8f2 100%);
+  font-size: calc(126 * var(--u));
+  letter-spacing: 0.005em;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 calc(18 * var(--u)) rgba(170, 140, 255, 0.35)) drop-shadow(0 3px 0 rgba(10, 5, 30, 0.6));
+}
+
+.hero__o {
+  position: relative;
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  margin: 0 -0.015em;
+  align-self: center;
+  transform: translateY(-0.02em);
+}
+.hero__o-planet {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 0 0.06em rgba(220, 210, 255, 0.7));
+}
+.hero__o-star {
+  position: absolute;
+  left: 50%;
+  top: -0.4em;
+  width: 0.32em;
+  height: 0.32em;
+  translate: -50% 0;
+  background: #fff;
+  clip-path: polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%);
+  filter: drop-shadow(0 0 0.08em #fff);
+  animation: hero-twinkle 4.5s ease-in-out infinite;
+}
+
+.hero__title-line--2 {
+  gap: calc(16 * var(--u));
+  margin-top: calc(4 * var(--u));
+  padding-left: calc(56 * var(--u));
+  font-size: calc(94 * var(--u));
+  filter: drop-shadow(0 0 calc(22 * var(--u)) rgba(220, 110, 255, 0.35)) drop-shadow(0 3px 0 rgba(10, 5, 30, 0.6));
+}
+.hero__the {
+  font-size: 0.42em;
+  letter-spacing: 0.04em;
+  color: var(--white);
+}
+
+.hero__body {
+  margin: calc(6 * var(--u)) 0 0 calc(190 * var(--u));
+  width: calc(640 * var(--u));
+  text-align: center;
+}
+
+.hero__tagline {
+  margin: 0;
+  font-size: max(11px, calc(15.5 * var(--u)));
+  font-weight: 600;
+  letter-spacing: 0.46em;
+  text-transform: uppercase;
+  color: #ece6ff;
+  text-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+}
+
+.hero__desc {
+  max-width: calc(520 * var(--u));
+  margin: calc(14 * var(--u)) auto 0;
+  font-size: max(15px, calc(18 * var(--u)));
+  font-weight: 500;
+  line-height: 1.45;
+  color: rgba(238, 233, 255, 0.9);
+  text-shadow: 0 1px 10px rgba(3, 3, 14, 0.8);
+}
+
+.hero__form {
+  margin-top: calc(18 * var(--u));
+}
+.hero__features {
+  margin-top: calc(16 * var(--u)) !important;
+}
+.hero__form .waitlist {
+  max-width: max(380px, calc(460 * var(--u)));
+}
+
+.hero__features {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  max-width: calc(500 * var(--u));
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.hero__feature {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 0 6px;
+}
+.hero__feature + .hero__feature::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 22%;
+  height: 46%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(190, 170, 255, 0.35), transparent);
+}
+
+.hero__feature-icon {
+  width: max(26px, calc(34 * var(--u)));
+  height: max(26px, calc(34 * var(--u)));
+  margin-bottom: 4px;
+  filter: drop-shadow(0 0 8px currentColor);
+}
+.hero__feature--explore {
+  color: #8db8ff;
+}
+.hero__feature--fight {
+  color: #dcd6ff;
+}
+.hero__feature--collect {
+  color: #e46bff;
+}
+.hero__feature--restore {
+  color: #5ad7ff;
+}
+
+.hero__feature-title,
+.hero__feature-sub {
+  font-size: max(10.5px, calc(12 * var(--u)));
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.25;
+  color: #f2eeff;
+  white-space: nowrap;
+}
+.hero__feature-sub {
+  font-weight: 500;
+  color: rgba(225, 218, 255, 0.78);
+}
+
+/* ---------- scroll cue ---------- */
+.hero__cue {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: 22px;
+  translate: -50% 0;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: rgba(225, 218, 255, 0.7);
+  animation: hero-cue-in 1.2s 1.4s var(--ease-out) both;
+}
+@keyframes hero-cue-in {
+  from {
+    opacity: 0;
+    translate: -50% 12px;
+  }
+}
+.hero__cue i {
+  position: relative;
+  width: 1px;
+  height: 38px;
+  overflow: hidden;
+  background: rgba(200, 180, 255, 0.2);
+}
+.hero__cue i::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 1px;
+  height: 14px;
+  background: linear-gradient(180deg, transparent, #fff);
+  animation: hero-cue 2.2s var(--ease-cine) infinite;
+}
+
+@keyframes hero-cue {
+  from {
+    transform: translateY(-14px);
+  }
+  to {
+    transform: translateY(38px);
+  }
+}
+
+@keyframes hero-twinkle {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(0.82) rotate(12deg);
+  }
+}
+
+/* ---------- portrait recomposition (phones / tablets) ---------- */
+[data-layout='portrait'] .hero__copy {
+  left: 0;
+  right: 0;
+  width: auto;
+  top: calc(var(--nav-h) + 2px);
+  padding: 0 20px;
+}
+[data-layout='portrait'] .hero__title {
+  display: grid;
+  justify-items: center;
+}
+[data-layout='portrait'] .hero__title-line--1 {
+  font-size: clamp(46px, 15.5vw, 112px);
+}
+[data-layout='portrait'] .hero__title-line--2 {
+  padding-left: 0;
+  gap: 0.18em;
+  font-size: clamp(32px, 10.4vw, 78px);
+}
+[data-layout='portrait'] .hero__body {
+  width: auto;
+  margin: 10px auto 0;
+  max-width: 520px;
+}
+[data-layout='portrait'] .hero__tagline {
+  font-size: clamp(10px, 2.7vw, 14px);
+  letter-spacing: 0.3em;
+}
+[data-layout='portrait'] .hero__desc {
+  max-width: 34ch;
+  margin-top: 12px;
+  font-size: clamp(14px, 3.8vw, 17px);
+}
+[data-layout='portrait'] .hero__form {
+  margin-top: 16px;
+}
+[data-layout='portrait'] .hero__features {
+  display: none;
+}
+[data-layout='portrait'] .hero__scrim {
+  background:
+    /* the planet's night side (also hides the retouched title area of the key art) */
+    radial-gradient(
+      calc(470 * var(--u)) calc(300 * var(--u)) at calc(var(--img-x) + 560 * var(--u)) calc(var(--img-y) + 330 * var(--u)),
+      rgba(4, 5, 18, 0.72),
+      rgba(4, 5, 18, 0.4) 55%,
+      transparent 85%
+    ),
+    linear-gradient(180deg, rgba(3, 4, 12, 0.55) 0%, rgba(3, 4, 12, 0.25) 45%, transparent 62%),
+    linear-gradient(0deg, rgba(3, 4, 11, 0.3) 0%, transparent 25%);
+}
+[data-layout='portrait'] .hero__cue {
+  display: none;
+}
+
+@media (max-height: 640px) and (orientation: landscape) {
+  .hero__features {
+    display: none;
+  }
+}

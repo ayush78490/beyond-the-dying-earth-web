@@ -1,0 +1,234 @@
+/* ------------------------------------------------------------------
+   Design tokens — sampled from the key art
+------------------------------------------------------------------- */
+:root {
+  --space-black: #03040b;
+  --deep-navy: #070b22;
+  --navy: #0d1438;
+  --violet: #7b4dff;
+  --violet-soft: #a98bff;
+  --magenta: #e04cff;
+  --pink: #ff6fcf;
+  --cyan: #5ad7ff;
+  --sunset: #ff9a6b;
+  --white: #f4f0ff;
+  --text: #e6e1fb;
+  --muted: #9d97c2;
+  --dim: #6b6690;
+  --line: rgba(170, 150, 255, 0.2);
+  --line-strong: rgba(190, 160, 255, 0.45);
+  --panel: rgba(9, 10, 32, 0.55);
+
+  --font-display: 'Cinzel', 'Trajan Pro', Georgia, serif;
+  --font-ui: 'Rajdhani', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'Share Tech Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-cine: cubic-bezier(0.65, 0, 0.35, 1);
+  --nav-h: 76px;
+  --gutter: clamp(16px, 4vw, 64px);
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  background: var(--space-black);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--space-black);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 18px;
+  line-height: 1.55;
+  font-weight: 500;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+body.is-loading {
+  overflow: hidden;
+}
+
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: rgba(224, 76, 255, 0.45);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: -60px;
+  z-index: 200;
+  padding: 10px 16px;
+  background: var(--violet);
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 16px;
+}
+
+/* ------------------------------------------------------------------
+   Shared section language
+------------------------------------------------------------------- */
+.section {
+  position: relative;
+  padding: clamp(96px, 14vh, 160px) var(--gutter);
+  isolation: isolate;
+}
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--violet-soft);
+}
+.kicker::before {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.7;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.02;
+  color: var(--white);
+  margin: 0;
+  text-wrap: balance;
+}
+
+.h2 {
+  font-size: clamp(40px, 6.2vw, 92px);
+}
+
+.lede {
+  max-width: 60ch;
+  font-size: clamp(17px, 1.35vw, 21px);
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+.gradient-text {
+  --grad: linear-gradient(180deg, #d9ccff 0%, #b48cff 45%, #f08cd8 100%);
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* HUD corner brackets: put .hud-frame on a positioned element */
+.hud-frame {
+  --c: var(--line-strong);
+  --s: 14px;
+  background:
+    linear-gradient(var(--c), var(--c)) top left / var(--s) 1px,
+    linear-gradient(var(--c), var(--c)) top left / 1px var(--s),
+    linear-gradient(var(--c), var(--c)) top right / var(--s) 1px,
+    linear-gradient(var(--c), var(--c)) top right / 1px var(--s),
+    linear-gradient(var(--c), var(--c)) bottom left / var(--s) 1px,
+    linear-gradient(var(--c), var(--c)) bottom left / 1px var(--s),
+    linear-gradient(var(--c), var(--c)) bottom right / var(--s) 1px,
+    linear-gradient(var(--c), var(--c)) bottom right / 1px var(--s);
+  background-repeat: no-repeat;
+}
+
+/* Reveal-on-scroll (driven by GSAP; content is visible without JS / with reduced motion) */
+.js-motion [data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+}
+.js-motion [data-split] {
+  visibility: hidden;
+}
+
+/* SplitText pieces. A split gradient title paints the gradient per character
+   (vertical gradient, so it looks identical), and the parent stops painting it. */
+.split-word,
+.split-char {
+  display: inline-block;
+}
+.split-word-mask {
+  /* never break inside a word, even when its letters are inline-blocks */
+  white-space: nowrap;
+}
+.split-word-mask,
+.split-line-mask {
+  /* masks clip the rising glyphs; a little room for descenders/accents */
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.gradient-text:has(.split-char),
+.hero__title-line--1:has(.split-char) {
+  background: none;
+}
+.gradient-text .split-char,
+.hero__title-line--1 .split-char {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

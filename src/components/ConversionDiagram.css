@@ -1,0 +1,149 @@
+/* ---------- diagram ---------- */
+.diagram {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.diagram--tall {
+  max-width: 400px;
+}
+
+.diagram__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.diagram__edge {
+  fill: none;
+  stroke-width: 1.4;
+  opacity: 0.75;
+}
+.diagram__edge-glow {
+  fill: none;
+  stroke-width: 8;
+  opacity: 0.16;
+}
+
+.node {
+  --hex: 92px;
+  position: absolute;
+  /* anchor = centre of the hex (the label hangs below it) */
+  translate: -50% calc(var(--hex) / -2);
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  width: 0;
+}
+.node__hex {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--hex);
+  height: var(--hex);
+  color: var(--c);
+  clip-path: polygon(50% 0, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--c) 45%, transparent), rgba(10, 10, 30, 0.6));
+  transition: transform 0.5s var(--ease-out);
+}
+.node__hex::before {
+  content: '';
+  position: absolute;
+  inset: 1.5px;
+  clip-path: inherit;
+  background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--c) 18%, #0a0a1e), #07071a 70%);
+}
+.node__glyph {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  filter: drop-shadow(0 0 8px var(--c));
+}
+.node:hover .node__hex {
+  transform: scale(1.08);
+}
+.node__label {
+  display: grid;
+  justify-items: center;
+  white-space: nowrap;
+  text-align: center;
+}
+.node__label b {
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: 0.1em;
+  color: var(--white);
+  text-shadow: 0 0 14px var(--g);
+}
+.node__label span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c);
+}
+
+.node--nft {
+  --hex: 108px;
+}
+.node--nft .node__hex {
+  animation: nft-glow 3.2s ease-in-out infinite;
+}
+
+.diagram--tall .node {
+  --hex: 72px;
+}
+.diagram--tall .node--nft {
+  --hex: 84px;
+}
+.diagram--tall .node__glyph {
+  width: 36px;
+  height: 36px;
+}
+.diagram--tall .node__label b {
+  font-size: 15px;
+}
+.diagram--tall .node__label span {
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+}
+
+@keyframes nft-glow {
+  50% {
+    filter: drop-shadow(0 0 18px rgba(240, 230, 255, 0.6));
+  }
+}
+
+/* vertical lanes: paths pass behind the labels, so give them a backing plate */
+.diagram--tall .node__label {
+  position: relative;
+  z-index: 1;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(6, 6, 22, 0.9);
+}
+.diagram--tall .node__hex {
+  position: relative;
+  z-index: 1;
+}
+
+/* compact HUD version (inside the journey's economy beat) */
+.diagram--hud .node {
+  --hex: 50px;
+  gap: 4px;
+}
+.diagram--hud .node--nft {
+  --hex: 58px;
+}
+.diagram--hud .node__glyph {
+  width: 26px;
+  height: 26px;
+}
+.diagram--hud .node__label b {
+  font-size: 11px;
+}
+.diagram--hud .node__label span {
+  display: none;
+}

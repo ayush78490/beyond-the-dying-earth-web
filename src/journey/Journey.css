@@ -1,0 +1,413 @@
+/* One long scroll track; the world lives in the sticky stage. It begins underneath the
+   hero (negative margin + lower z-index), so the hero dissolves straight into it. */
+.journey {
+  --journey-h: 1400vh;
+  position: relative;
+  z-index: 1;
+  height: var(--journey-h);
+  margin-top: -100vh;
+  margin-top: -100svh;
+  background: #06040a;
+}
+
+.journey__anchor {
+  position: absolute;
+  left: 0;
+  top: calc(var(--at) * (var(--journey-h) - 100vh));
+  width: 1px;
+  height: 1px;
+}
+
+.journey__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.journey__canvas {
+  position: absolute !important;
+  inset: 0;
+}
+
+.journey__vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(3, 2, 8, 0.55) 100%),
+    linear-gradient(180deg, rgba(3, 2, 8, 0.35) 0%, transparent 14%);
+}
+
+.journey__flash {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle at 50% 50%, #fff 0%, #ffe6ff 22%, #f07bff 52%, #a12fe0 85%, #4a1470 100%);
+}
+
+/* ---------- story text over the world ---------- */
+.story-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.beat {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  width: min(600px, 44vw);
+  will-change: opacity, transform, filter;
+}
+/* a soft pool of dusk behind the words, so they read over any part of the world */
+.beat::before {
+  content: '';
+  position: absolute;
+  inset: -18% -22%;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgba(5, 3, 14, 0.62), rgba(5, 3, 14, 0.3) 60%, transparent);
+  pointer-events: none;
+}
+.beat--cta::before {
+  inset: -10% -14%;
+}
+.beat--left {
+  left: var(--gutter);
+}
+.beat--right {
+  right: calc(var(--gutter) + 120px);
+  text-align: right;
+}
+.beat--right .kicker {
+  flex-direction: row-reverse;
+}
+.beat--center {
+  left: 50%;
+  width: min(980px, calc(100% - 32px));
+  translate: -50% -50%;
+  text-align: center;
+  display: grid;
+  justify-items: center;
+}
+.beat--cta {
+  top: 12vh;
+  translate: -50% 0;
+  pointer-events: auto;
+}
+
+.beat__kicker {
+  color: #ffab85;
+}
+.beat__title {
+  margin: 16px 0 18px;
+  font-size: clamp(38px, 5.4vw, 88px);
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.6);
+}
+.beat__title--big {
+  font-size: clamp(46px, 7.4vw, 124px);
+}
+.beat__body {
+  margin: 0;
+  max-width: 46ch;
+  font-size: clamp(16px, 1.3vw, 20px);
+  line-height: 1.55;
+  color: rgba(230, 224, 250, 0.84);
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.85);
+}
+.beat--center .beat__body {
+  margin-inline: auto;
+}
+.beat--right .beat__body {
+  margin-left: auto;
+}
+
+/* the chapter palette travels with the story: rust → violet → cyan */
+.beat:nth-of-type(n + 3) .beat__kicker {
+  color: var(--pink);
+}
+.beat:nth-of-type(n + 5) .beat__kicker {
+  color: var(--cyan);
+}
+.beat--story:nth-of-type(8) .beat__kicker,
+.beat--story:nth-of-type(10) .beat__kicker {
+  color: #ff7d93;
+}
+.beat:first-of-type .beat__title {
+  --grad: linear-gradient(180deg, #fff 20%, #ffb98f 75%, #ff7a4a 100%);
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.beat:first-of-type .beat__title:has(.split-char) {
+  background: none;
+}
+.beat:first-of-type .split-char {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.beat--title .beat__title {
+  --grad: linear-gradient(180deg, #ffffff 25%, #d4c4ff 65%, #b48cff 100%);
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 30px rgba(150, 110, 255, 0.4));
+}
+.beat--title .beat__title:has(.split-char) {
+  background: none;
+}
+.beat--title .split-char {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.beat__bullets {
+  display: grid;
+  gap: 10px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.beat__bullets li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9);
+}
+.beat__bullets li::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  rotate: 45deg;
+  border: 1px solid var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+}
+.beat--energies {
+  /* sits high: the world labels below name the five energies */
+  top: 24%;
+}
+
+.beat--economy {
+  width: min(620px, 46vw);
+}
+.beat__diagram {
+  margin-top: 20px;
+  padding: 18px 16px 10px;
+  background-color: rgba(8, 6, 24, 0.55);
+}
+
+/* the finale */
+.beat__line {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(20px, 2.8vw, 40px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.beat__line--dying {
+  color: rgba(255, 190, 170, 0.7);
+}
+.beat__line--hope {
+  margin-top: 6px;
+  color: #bfe9ff;
+}
+.beat__title--cta {
+  margin-top: clamp(16px, 4vh, 40px);
+  font-size: clamp(40px, 6.2vw, 100px);
+  line-height: 1;
+}
+.beat__title-line {
+  display: block;
+}
+.beat__the {
+  font-size: 0.42em;
+  letter-spacing: 0.04em;
+}
+.beat--cta .waitlist {
+  margin-top: 8px;
+}
+
+/* ---------- world-anchored HUD callouts ---------- */
+.world-labels {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.world-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: flex-start;
+  will-change: transform, opacity;
+}
+.world-label__dot {
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  border: 1px solid var(--c);
+  box-shadow: 0 0 10px var(--c);
+  animation: label-ping 2.4s ease-out infinite;
+}
+.world-label__line {
+  width: 46px;
+  height: 30px;
+  margin-top: -30px;
+  border-bottom: 1px solid color-mix(in srgb, var(--c) 70%, transparent);
+  border-left: 1px solid color-mix(in srgb, var(--c) 70%, transparent);
+  transform: skewX(40deg);
+  transform-origin: bottom left;
+}
+.world-label__text {
+  display: grid;
+  margin: -46px 0 0 6px;
+  padding: 4px 8px;
+  background: linear-gradient(90deg, rgba(6, 4, 20, 0.7), transparent);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.world-label__text b {
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  color: #fff;
+  text-shadow: 0 0 12px var(--c);
+}
+.world-label__text small {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--c);
+}
+@keyframes label-ping {
+  0% {
+    box-shadow: 0 0 0 0 var(--c);
+  }
+  100% {
+    box-shadow: 0 0 0 14px transparent;
+  }
+}
+
+/* ---------- chapter rail ---------- */
+.chapters {
+  position: fixed;
+  z-index: 40;
+  right: clamp(14px, 2.4vw, 40px);
+  top: 50%;
+  translate: 0 -50%;
+  display: flex;
+  gap: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s var(--ease-out);
+}
+.chapters[data-on='1'] {
+  opacity: 1;
+  pointer-events: auto;
+}
+.chapters ol {
+  display: grid;
+  gap: 22px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.chapters button {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(200, 190, 240, 0.4);
+  transition: color 0.4s;
+}
+.chapters__index {
+  min-width: 18px;
+}
+.chapters__label {
+  opacity: 0;
+  translate: -6px 0;
+  transition:
+    opacity 0.4s,
+    translate 0.4s var(--ease-out);
+}
+.chapters button[data-state='past'] {
+  color: rgba(220, 210, 255, 0.6);
+}
+.chapters button[data-state='active'] {
+  color: #fff;
+  text-shadow: 0 0 12px rgba(224, 76, 255, 0.9);
+}
+.chapters button[data-state='active'] .chapters__label,
+.chapters:hover .chapters__label {
+  opacity: 1;
+  translate: 0 0;
+}
+.chapters__rail {
+  position: relative;
+  width: 1px;
+  background: rgba(200, 180, 255, 0.18);
+}
+.chapters__rail i {
+  position: absolute;
+  inset: 0 0 auto;
+  height: calc(var(--rail, 0) * 100%);
+  background: linear-gradient(180deg, #ff9a6b, var(--magenta), var(--cyan));
+  box-shadow: 0 0 8px var(--magenta);
+}
+
+/* ---------- small screens ---------- */
+@media (max-width: 900px) {
+  .journey {
+    --journey-h: 1000vh;
+  }
+  .beat,
+  .beat--economy {
+    left: 18px;
+    right: 18px;
+    width: auto;
+    top: 22%;
+    translate: 0 0;
+    text-align: left;
+  }
+  .beat--center {
+    left: 50%;
+    right: auto;
+    width: calc(100% - 32px);
+    translate: -50% 0;
+    text-align: center;
+  }
+  .beat--cta {
+    top: 10vh;
+  }
+  .beat--right .kicker {
+    flex-direction: row;
+  }
+  .chapters {
+    display: none;
+  }
+}

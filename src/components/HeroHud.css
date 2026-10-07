@@ -1,0 +1,269 @@
+.hud {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  color: rgba(220, 210, 255, 0.85);
+}
+
+/* anchor a point inside the painting */
+.hud__anchor {
+  position: absolute;
+  left: calc(var(--img-x) + var(--ax) * var(--u));
+  top: calc(var(--img-y) + var(--ay) * var(--u));
+  width: 0;
+  height: 0;
+}
+
+.hud-tag {
+  display: grid;
+  gap: 2px;
+  white-space: nowrap;
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+}
+.hud-tag b {
+  font-weight: 400;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(224, 76, 255, 0.8);
+}
+.hud-tag small {
+  font-size: 9.5px;
+  color: rgba(200, 190, 240, 0.7);
+}
+.hud-tag--red b {
+  text-shadow: 0 0 10px rgba(255, 70, 90, 0.8);
+  color: #ffd0d6;
+}
+
+/* ---------- portal scanner ---------- */
+.hud-portal {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.hud-portal__reticle {
+  position: absolute;
+  left: calc(-58 * var(--u));
+  top: calc(-58 * var(--u));
+  width: calc(116 * var(--u));
+  height: calc(116 * var(--u));
+}
+
+.hud-portal__ring,
+.hud-portal__ticks {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+.hud-portal__ring {
+  border: 1px dashed rgba(255, 150, 250, 0.45);
+  animation: hud-rotate 26s linear infinite;
+}
+.hud-portal__ticks {
+  inset: -10%;
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 170, 255, 0.7) 0 2deg,
+    transparent 2deg 88deg,
+    rgba(255, 170, 255, 0.7) 88deg 92deg,
+    transparent 92deg 178deg,
+    rgba(255, 170, 255, 0.7) 178deg 182deg,
+    transparent 182deg 268deg,
+    rgba(255, 170, 255, 0.7) 268deg 272deg,
+    transparent 272deg
+  );
+  -webkit-mask: radial-gradient(circle, transparent 66%, #000 67%, #000 70%, transparent 71%);
+  mask: radial-gradient(circle, transparent 66%, #000 67%, #000 70%, transparent 71%);
+  animation: hud-rotate 40s linear infinite reverse;
+  transition: filter 0.4s;
+}
+.hud-portal[data-surge='1'] .hud-portal__ticks {
+  filter: brightness(2) drop-shadow(0 0 6px rgba(255, 120, 255, 0.9));
+}
+
+/* label sits down-left of the reticle (clear of the energy readout), joined by a leader line */
+.hud-portal__label {
+  position: absolute;
+  right: calc(52 * var(--u));
+  top: calc(40 * var(--u));
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: flex-end;
+  gap: 8px;
+  text-align: right;
+}
+.hud-portal__line {
+  width: calc(44 * var(--u));
+  height: calc(56 * var(--u));
+  margin-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 170, 255, 0.5);
+  border-right: 1px solid rgba(255, 170, 255, 0.5);
+  transform: skewX(-34deg);
+  transform-origin: bottom right;
+}
+.hud-portal__label .hud-tag {
+  padding: 4px 8px;
+  background: linear-gradient(270deg, rgba(8, 6, 24, 0.6), transparent);
+}
+
+/* ---------- hostile marker ---------- */
+.hud-rari {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hud-rari__box {
+  width: calc(64 * var(--u));
+  height: calc(54 * var(--u));
+  transform: translate(-50%, -50%);
+  --c: rgba(255, 80, 100, 0.75);
+  --s: 9px;
+  background:
+    linear-gradient(var(--c), var(--c)) top left / var(--s) 1px,
+    linear-gradient(var(--c), var(--c)) top left / 1px var(--s),
+    linear-gradient(var(--c), var(--c)) top right / var(--s) 1px,
+    linear-gradient(var(--c), var(--c)) top right / 1px var(--s),
+    linear-gradient(var(--c), var(--c)) bottom left / var(--s) 1px,
+    linear-gradient(var(--c), var(--c)) bottom left / 1px var(--s),
+    linear-gradient(var(--c), var(--c)) bottom right / var(--s) 1px,
+    linear-gradient(var(--c), var(--c)) bottom right / 1px var(--s);
+  background-repeat: no-repeat;
+  animation: hud-lock 4s var(--ease-out) infinite;
+}
+.hud-rari .hud-tag {
+  position: absolute;
+  right: calc(40 * var(--u));
+  bottom: calc(34 * var(--u));
+  text-align: right;
+}
+
+/* ---------- energy readout ---------- */
+.hud-readout {
+  position: absolute;
+  right: clamp(16px, 4vw, 72px);
+  top: calc(var(--nav-h) + 28px);
+  width: 230px;
+  padding: 14px 16px 12px;
+  background: linear-gradient(180deg, rgba(10, 8, 30, 0.42), rgba(10, 8, 30, 0.12));
+  overflow: hidden;
+}
+.hud-readout__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  color: #fff;
+}
+.hud-readout ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 7px;
+}
+.hud-readout li {
+  display: grid;
+  grid-template-columns: 54px 1fr 38px;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+.hud-readout__bar {
+  height: 3px;
+  background: rgba(170, 150, 255, 0.16);
+  overflow: hidden;
+}
+.hud-readout__bar i {
+  display: block;
+  height: 100%;
+  transform-origin: left;
+  background: linear-gradient(90deg, var(--violet), var(--cyan));
+  box-shadow: 0 0 8px var(--cyan);
+}
+.hud-readout__val {
+  text-align: right;
+  color: var(--cyan);
+}
+.hud-readout__scan {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent, rgba(150, 220, 255, 0.12), transparent);
+  background-size: 100% 40%;
+  background-repeat: no-repeat;
+  animation: hud-scan 4.5s linear infinite;
+}
+
+.hud-blink {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--magenta);
+  box-shadow: 0 0 8px var(--magenta);
+  animation: hud-blink 1.4s steps(2, jump-none) infinite;
+}
+
+/* ---------- mission clock ---------- */
+.hud-coords {
+  position: absolute;
+  left: clamp(16px, 4vw, 72px);
+  bottom: 28px;
+  display: grid;
+  gap: 4px;
+  font-size: 10.5px;
+  letter-spacing: 0.24em;
+  color: rgba(220, 210, 255, 0.62);
+}
+
+@keyframes hud-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes hud-lock {
+  0%,
+  100% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  8% {
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(1.35);
+  }
+  16% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+@keyframes hud-scan {
+  from {
+    background-position: 0 -60%;
+  }
+  to {
+    background-position: 0 160%;
+  }
+}
+@keyframes hud-blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+/* secondary HUD disappears on small / portrait screens */
+@media (max-width: 1100px) {
+  .hud__anchor--secondary,
+  .hud-readout {
+    display: none;
+  }
+}
+[data-layout='portrait'] .hud__anchor,
+[data-layout='portrait'] .hud-coords {
+  display: none;
+}
