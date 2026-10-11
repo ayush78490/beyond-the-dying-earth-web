@@ -11,12 +11,6 @@ export const NAV_LINKS = [
 export const HERO = {
   tagline: 'A 2D action-adventure across the stars',
   description: ['Explore a dying universe.', 'Collect cosmic energy.', 'Fight the RARI.', "Restore Earth's balance."],
-  features: [
-    { icon: 'explore', title: 'Explore', sub: 'Alien worlds' },
-    { icon: 'fight', title: 'Fight', sub: 'The RARI' },
-    { icon: 'collect', title: 'Collect', sub: 'Rego · Oliva · Kama' },
-    { icon: 'restore', title: 'Restore', sub: 'A dying Earth' },
-  ],
 } as const;
 
 export const HUD_READOUT = [

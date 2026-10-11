@@ -34,7 +34,10 @@ export function CameraRig({ motion }: { motion: number }) {
     if (aspect < 1.3) {
       const hHalf = Math.tan(THREE.MathUtils.degToRad(fov / 2)) * 1.6 * 0.6;
       const v = THREE.MathUtils.radToDeg(2 * Math.atan(hHalf / aspect));
-      fov = Math.min(Math.max(fov, v), 78);
+      // ...except for the closing orbit shot: the Earth fills any width there, so keep the
+      // lens tight and the horizon low
+      const widen = 1 - 0.65 * THREE.MathUtils.smoothstep(journey.t, 0.975, 0.995);
+      fov = THREE.MathUtils.lerp(fov, Math.min(Math.max(fov, v), 78), widen);
     }
     camera.position.copy(tmp.pos);
     camera.lookAt(tmp.look);

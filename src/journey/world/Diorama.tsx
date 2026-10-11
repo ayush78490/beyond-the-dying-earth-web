@@ -23,13 +23,22 @@ const BASE = `${import.meta.env.BASE_URL}assets/journey/`;
 
 /** Per-layer shader features (compile-time) and draw order (far → near). */
 const LAYERS: { name: LayerName; order: number; band: [number, number]; defines: Record<string, string> }[] = [
-  { name: 'sky', order: 1, band: [-1, 0.07], defines: { CLOUDS: '' } },
+  { name: 'sky', order: 1, band: [-1, 0.07], defines: { CLOUDS: '', SKY_EXT: '' } },
   { name: 'planet', order: 2, band: [0.0, 1.0], defines: { PLANET: '' } },
   { name: 'far', order: 4, band: [0.2, 0.4], defines: { ROCKS: '', WATER: '', GLOW: '', PORTAL_LENS: '' } },
   { name: 'mid', order: 6, band: [0.4, 0.62], defines: { WATER: '', GLOW: '' } },
-  { name: 'fore', order: 7, band: [0.62, 9.0], defines: { WATER: '', GLOW: '' } },
+  { name: 'fore', order: 7, band: [0.62, 9.0], defines: { WATER: '', GLOW: '', GROUND_EXT: '' } },
   { name: 'chars', order: 8, band: [-1, 1], defines: { SWAY: '', GLOW: '' } },
 ];
+
+/**
+ * Portrait screens see far above and below the painting: the sky card reaches up into
+ * synthesised deep sky and the foreground card down into shadowed ground (see diorama.frag).
+ */
+const EXTEND: Partial<Record<LayerName, { top: number; bottom: number }>> = {
+  sky: { top: 900, bottom: 0 },
+  fore: { top: 0, bottom: 560 },
+};
 
 /** The alien world appears behind the entry clouds — never before. */
 const worldOpacity = (t: number) => (t >= PORTAL_CUT ? 0 : smoothstep(0.548, 0.588, t));
@@ -63,7 +72,9 @@ function DioramaCards({ textures, motion }: { textures: HeroTextures; motion: nu
     () =>
       LAYERS.map((layer, i) => {
         const rect = LAYER_RECTS[layer.name];
-        const place = cardPlacement(rect, LAYER_DISTANCE[layer.name]);
+        const ext = EXTEND[layer.name] ?? { top: 0, bottom: 0 };
+        const drawn = { x: rect.x, y: rect.y - ext.top, w: rect.w, h: rect.h + ext.top + ext.bottom };
+        const place = cardPlacement(drawn, LAYER_DISTANCE[layer.name]);
         const mat = new THREE.ShaderMaterial({
           vertexShader: quadVert,
           fragmentShader: dioramaFrag,
@@ -78,7 +89,8 @@ function DioramaCards({ textures, motion }: { textures: HeroTextures; motion: nu
             uMapB: { value: textures.mapB },
             uMapC: { value: textures.mapC },
             uImage: { value: new THREE.Vector2(IMAGE.w, IMAGE.h) },
-            uRect: { value: new THREE.Vector4(rect.x, rect.y, rect.w, rect.h) },
+            uRect: { value: new THREE.Vector4(drawn.x, drawn.y, drawn.w, drawn.h) },
+            uTexRect: { value: new THREE.Vector4(rect.x, rect.y, rect.w, rect.h) },
             uTime: { value: 0 },
             uMotion: { value: 1 },
             uOpacity: { value: 0 },

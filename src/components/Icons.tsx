@@ -51,41 +51,6 @@ export const ArrowRight = (p: P) => (
   </svg>
 );
 
-export const ExploreIcon = (p: P) => (
-  <svg viewBox="0 0 32 32" {...base(p)}>
-    <path d="M16 2 L24 12 L16 30 L8 12 Z" fill="rgba(110,170,255,0.25)" />
-    <path d="M8 12 H24 M16 2 L13 12 L16 30 L19 12 Z" />
-  </svg>
-);
-
-export const FightIcon = (p: P) => (
-  <svg viewBox="0 0 32 32" {...base(p)}>
-    <path d="M5 5 L20 20 M5 5 L5 9 M5 5 L9 5 M18 23 L23 18 M21 21 L27 27" />
-    <path d="M27 5 L12 20 M27 5 L27 9 M27 5 L23 5 M14 23 L9 18 M11 21 L5 27" />
-  </svg>
-);
-
-export const CollectIcon = (p: P) => (
-  <svg viewBox="0 0 32 32" {...base(p)}>
-    <path d="M16 2 L25 11 L16 30 L7 11 Z" fill="rgba(224,76,255,0.3)" />
-    <path d="M7 11 L16 15 L25 11 M16 15 V30" />
-  </svg>
-);
-
-export const RestoreIcon = (p: P) => (
-  <svg viewBox="0 0 32 32" {...base(p)}>
-    <circle cx="16" cy="16" r="12.5" fill="rgba(80,200,255,0.2)" />
-    <path d="M7 10 C 11 11, 12 14, 10 17 C 9 19, 11 22, 13 22 M18 5 C 17 8, 20 10, 22 9 C 25 9, 26 12, 24 14 C 22 16, 23 19, 26 20 M16 28.5 C 17 25, 15 23, 17 21" />
-  </svg>
-);
-
-export const FEATURE_ICONS = {
-  explore: ExploreIcon,
-  fight: FightIcon,
-  collect: CollectIcon,
-  restore: RestoreIcon,
-} as const;
-
 /** One crystal silhouette per resource so they read apart at a glance. */
 export function ResourceGlyph({ id, ...p }: P & { id: ResourceId }) {
   const shapes: Record<ResourceId, ReactElement> = {

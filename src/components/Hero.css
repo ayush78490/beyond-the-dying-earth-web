@@ -196,72 +196,10 @@
 .hero__form {
   margin-top: calc(18 * var(--u));
 }
-.hero__features {
-  margin-top: calc(16 * var(--u)) !important;
-}
 .hero__form .waitlist {
   max-width: max(380px, calc(460 * var(--u)));
 }
 
-.hero__features {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  max-width: calc(500 * var(--u));
-  margin: 0 auto;
-  padding: 0;
-  list-style: none;
-}
-
-.hero__feature {
-  position: relative;
-  display: grid;
-  justify-items: center;
-  gap: 2px;
-  padding: 0 6px;
-}
-.hero__feature + .hero__feature::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 22%;
-  height: 46%;
-  width: 1px;
-  background: linear-gradient(180deg, transparent, rgba(190, 170, 255, 0.35), transparent);
-}
-
-.hero__feature-icon {
-  width: max(26px, calc(34 * var(--u)));
-  height: max(26px, calc(34 * var(--u)));
-  margin-bottom: 4px;
-  filter: drop-shadow(0 0 8px currentColor);
-}
-.hero__feature--explore {
-  color: #8db8ff;
-}
-.hero__feature--fight {
-  color: #dcd6ff;
-}
-.hero__feature--collect {
-  color: #e46bff;
-}
-.hero__feature--restore {
-  color: #5ad7ff;
-}
-
-.hero__feature-title,
-.hero__feature-sub {
-  font-size: max(10.5px, calc(12 * var(--u)));
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  line-height: 1.25;
-  color: #f2eeff;
-  white-space: nowrap;
-}
-.hero__feature-sub {
-  font-weight: 500;
-  color: rgba(225, 218, 255, 0.78);
-}
 
 /* ---------- scroll cue ---------- */
 .hero__cue {
@@ -362,27 +300,19 @@
 [data-layout='portrait'] .hero__form {
   margin-top: 16px;
 }
-[data-layout='portrait'] .hero__features {
-  display: none;
-}
 [data-layout='portrait'] .hero__scrim {
   background:
     /* the planet's night side (also hides the retouched title area of the key art) */
     radial-gradient(
       calc(470 * var(--u)) calc(300 * var(--u)) at calc(var(--img-x) + 560 * var(--u)) calc(var(--img-y) + 330 * var(--u)),
-      rgba(4, 5, 18, 0.72),
-      rgba(4, 5, 18, 0.4) 55%,
+      rgba(4, 5, 18, 0.5),
+      rgba(4, 5, 18, 0.26) 55%,
       transparent 85%
     ),
-    linear-gradient(180deg, rgba(3, 4, 12, 0.55) 0%, rgba(3, 4, 12, 0.25) 45%, transparent 62%),
+    linear-gradient(180deg, rgba(3, 4, 12, 0.5) 0%, rgba(3, 4, 12, 0.18) 45%, transparent 62%),
     linear-gradient(0deg, rgba(3, 4, 11, 0.3) 0%, transparent 25%);
 }
 [data-layout='portrait'] .hero__cue {
   display: none;
 }
 
-@media (max-height: 640px) and (orientation: landscape) {
-  .hero__features {
-    display: none;
-  }
-}

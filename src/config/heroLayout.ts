@@ -114,9 +114,10 @@ export function computeHeroFrame(vw: number, vh: number): HeroFrame {
     cy = h / 2 + (H - h) * 0.3;
   } else {
     layout = 'portrait';
-    w = lerp(780, H * overscan, clamp((a - 0.46) / 0.54, 0, 1));
+    // a tight crop: the painting rises behind the copy instead of sitting under it
+    w = lerp(540, H * overscan, clamp((a - 0.46) / 0.54, 0, 1));
     h = w / a;
-    cx = lerp(600, 560, clamp((a - 0.46) / 0.54, 0, 1));
+    cx = lerp(530, 560, clamp((a - 0.46) / 0.54, 0, 1));
     cy = h > H * overscan ? H - 12 - h / 2 : H / 2;
   }
   cx = clamp(cx, w / 2 + 12, W - w / 2 - 12);

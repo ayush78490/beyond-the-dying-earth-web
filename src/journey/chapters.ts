@@ -63,8 +63,9 @@ export const PATH_OUT: CameraKey[] = [
 /** After the portal flash: back home, the Earth heals. */
 export const PATH_HOME: CameraKey[] = [
   { t: 0.952, pos: [0, 4, 84], look: [0, 0, 0], fov: 40 },
-  { t: 0.98, pos: [0, 7, 52], look: [0, 4, 0], fov: 40 },
-  { t: 1.0, pos: [0, 9, 42], look: [0, 6.5, 0], fov: 40 },
+  { t: 0.975, pos: [0, 5, 36], look: [0, 3, 0], fov: 40 },
+  // settle into orbit: the healed Earth's limb becomes the horizon, the sky above it the stage
+  { t: 1.0, pos: [0, 3.5, 14.6], look: [0, 16.5, -0.6], fov: 40 },
 ];
 
 /** The cut between the two shots, hidden inside the portal flash. */

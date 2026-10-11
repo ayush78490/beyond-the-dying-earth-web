@@ -5,6 +5,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { prefersReducedMotion } from '../hooks/useReducedMotion';
 
 gsap.registerPlugin(ScrollTrigger);
+// phones resize the viewport whenever the address bar slides in or out: re-measuring
+// every scroll scene mid-gesture is what makes the page jump, so skip those refreshes
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 /**
  * Inertial smooth scrolling (Lenis) driven by GSAP's ticker, so ScrollTrigger,

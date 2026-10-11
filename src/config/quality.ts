@@ -30,7 +30,10 @@ function detectTier(): QualityTier {
   const cores = navigator.hardwareConcurrency ?? 4;
   const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8;
 
-  if (w < 768 || memory <= 2 || cores <= 2) return 'low';
+  if (memory <= 2 || cores <= 2) return 'low';
+  // phones: current ones run the full shader path (AdaptiveDpr guards the frame rate);
+  // only genuinely weak ones (Chrome reports memory; iOS does not) drop to the reduced path
+  if (w < 768) return memory <= 3 || cores <= 3 ? 'low' : 'medium';
   if (w < 1200 || coarse || memory <= 4 || cores <= 4) return 'medium';
   return 'high';
 }

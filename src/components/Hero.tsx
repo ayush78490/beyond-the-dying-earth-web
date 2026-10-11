@@ -13,7 +13,7 @@ import { HERO_ASSETS, type HeroTextures } from '../lib/heroAssets';
 import { isAutoScrolling, jumpToY } from '../lib/smoothScroll';
 import { charsIn, splitChars } from '../lib/textFx';
 import { HeroHud } from './HeroHud';
-import { FEATURE_ICONS, RingedPlanet } from './Icons';
+import { RingedPlanet } from './Icons';
 import { WaitlistButton } from './WaitlistButton';
 import './Hero.css';
 
@@ -192,18 +192,6 @@ export function Hero({ textures, revealed }: Props) {
           <div className="hero__form" data-hero-in>
             <WaitlistButton source="hero" />
           </div>
-          <ul className="hero__features" data-hero-in>
-            {HERO.features.map((f) => {
-              const Icon = FEATURE_ICONS[f.icon];
-              return (
-                <li key={f.title} className={`hero__feature hero__feature--${f.icon}`}>
-                  <Icon className="hero__feature-icon" />
-                  <span className="hero__feature-title">{f.title}</span>
-                  <span className="hero__feature-sub">{f.sub}</span>
-                </li>
-              );
-            })}
-          </ul>
         </div>
       </div>
 

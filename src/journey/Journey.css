@@ -243,6 +243,74 @@
   margin-top: 8px;
 }
 
+/* the finale's status readout: the game HUD, reporting the mission's outcome */
+.beat--cta .beat__kicker {
+  margin-bottom: clamp(10px, 2vh, 18px);
+  color: var(--cyan);
+}
+.finale-hud {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 34px;
+  margin: clamp(18px, 3vh, 28px) 0 0;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+.finale-hud__item {
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+}
+.finale-hud dt {
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  color: rgba(190, 220, 255, 0.6);
+}
+.finale-hud dd {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+.finale-hud b {
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: #e8f6ff;
+  text-shadow: 0 0 10px rgba(90, 215, 255, 0.8);
+}
+.finale-hud__bar {
+  position: relative;
+  width: 132px;
+  height: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(90, 215, 255, 0.45);
+  /* segmented track */
+  background: repeating-linear-gradient(90deg, rgba(90, 215, 255, 0.12) 0 11px, transparent 11px 13px);
+}
+.finale-hud__bar i {
+  position: absolute;
+  inset: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: repeating-linear-gradient(90deg, #5ad7ff 0 11px, transparent 11px 13px);
+  box-shadow: 0 0 10px rgba(90, 215, 255, 0.7);
+}
+.finale-hud__live {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #7dffb0;
+  box-shadow: 0 0 8px #7dffb0;
+  animation: finale-live 1.6s ease-in-out infinite;
+}
+@keyframes finale-live {
+  50% {
+    opacity: 0.35;
+  }
+}
+
 /* ---------- world-anchored HUD callouts ---------- */
 .world-labels {
   position: absolute;

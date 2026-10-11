@@ -12,6 +12,8 @@ interface EarthGlobeProps {
   motion: number;
   segments?: number;
   spin?: number;
+  /** atmosphere shell radius (planet radii): thinner when seen from low orbit */
+  shell?: RefObject<number>;
 }
 
 const LIGHT = new THREE.Vector3(1.0, 0.45, 0.7).normalize();
@@ -52,8 +54,9 @@ function useBakedFields(): THREE.Texture {
 }
 
 /** Procedural Earth + atmosphere shell, driven by a health ref. */
-export function EarthGlobe({ health, fade, motion, segments = 96, spin = 0.04 }: EarthGlobeProps) {
+export function EarthGlobe({ health, fade, motion, segments = 96, spin = 0.04, shell: shellScale }: EarthGlobeProps) {
   const globe = useRef<THREE.Mesh>(null);
+  const halo = useRef<THREE.Mesh>(null);
   const fields = useBakedFields();
 
   const surface = useMemo(
@@ -70,6 +73,7 @@ export function EarthGlobe({ health, fade, motion, segments = 96, spin = 0.04 }:
           uHealth: { value: 0 },
           uFade: { value: 1 },
           uLightDir: { value: LIGHT },
+          uRim: { value: 1 },
         },
       }),
     [fields],
@@ -87,6 +91,7 @@ export function EarthGlobe({ health, fade, motion, segments = 96, spin = 0.04 }:
           uColor: { value: new THREE.Color() },
           uLightDir: { value: LIGHT },
           uIntensity: { value: 1 },
+          uScale: { value: 1.14 },
         },
       }),
     [],
@@ -110,6 +115,11 @@ export function EarthGlobe({ health, fade, motion, segments = 96, spin = 0.04 }:
     (shell.uniforms.uColor.value as THREE.Color).copy(DYING).lerp(LIVING, h);
     shell.uniforms.uIntensity.value = (0.55 + h * 0.6) * f;
     if (globe.current) globe.current.rotation.y += dt * spin * motion;
+    const k = shellScale?.current ?? 1.14;
+    shell.uniforms.uScale.value = k;
+    // up close most of the visible surface is at a grazing angle: keep the rim light to the rim
+    surface.uniforms.uRim.value = 0.2 + 0.8 * THREE.MathUtils.clamp((k - 1.035) / 0.105, 0, 1);
+    halo.current?.scale.setScalar(k);
   });
 
   return (
@@ -117,7 +127,7 @@ export function EarthGlobe({ health, fade, motion, segments = 96, spin = 0.04 }:
       <mesh ref={globe} material={surface} rotation={[0.25, 0.6, 0.1]}>
         <sphereGeometry args={[1, segments, segments / 2]} />
       </mesh>
-      <mesh material={shell} scale={1.14}>
+      <mesh ref={halo} material={shell} scale={1.14}>
         <sphereGeometry args={[1, 64, 32]} />
       </mesh>
     </group>

@@ -9,7 +9,8 @@ uniform sampler2D uMapA;      // r depth  g waterfall  b lake
 uniform sampler2D uMapB;      // r cloud  g sway       b emissive
 uniform sampler2D uMapC;      // r planet g ring       b characters
 uniform vec2 uImage;
-uniform vec4 uRect;           // x, y, w, h (image px)
+uniform vec4 uRect;           // x, y, w, h (image px) covered by the card
+uniform vec4 uTexRect;        // x, y, w, h (image px) covered by uPlate
 uniform float uTime;
 uniform float uMotion;
 uniform float uOpacity;
@@ -27,7 +28,7 @@ uniform vec3 uHaze;           // colour of revealed (filled) areas
 
 varying vec2 vUv;
 
-vec2 plateUV(vec2 p) { return (p - uRect.xy) / uRect.zw; }
+vec2 plateUV(vec2 p) { return (p - uTexRect.xy) / uTexRect.zw; }
 
 //#pragma water
 //#pragma planet
@@ -104,6 +105,39 @@ void main() {
   off *= uMotion;
   vec2 ps = p - off;
   vec4 texel = texture(uPlate, clamp(plateUV(ps), 0.0, 1.0));
+
+  // Portrait screens see far past the painting's top and bottom edges, where the plates
+  // only hold stretched edge pixels. Replace them, as the hero does: deep sky above...
+  float synth = 0.0;
+#ifdef SKY_EXT
+  if (p.y < 0.0) {
+    vec3 top = textureLod(uPlate, clamp(plateUV(vec2(ps.x, 6.0)), 0.0, 1.0), 7.0).rgb;
+    float k = clamp(-p.y / 320.0, 0.0, 1.0);
+    vec3 deep = mix(vec3(0.03, 0.035, 0.09), vec3(0.008, 0.01, 0.035), k);
+    vec3 sky = mix(top, deep, smoothstep(0.0, 1.0, k));
+    vec2 cell = floor(p / 7.0);
+    float h = hash12(cell);
+    if (h > 0.955) {
+      vec2 f = fract(p / 7.0) - 0.5;
+      float twk = 0.5 + 0.5 * sin(t * (0.7 + h * 2.0) * uMotion + h * 40.0);
+      sky += vec3(0.8, 0.85, 1.0) * smoothstep(0.14, 0.0, length(f)) * twk * 0.8;
+    }
+    float neb = tfbm(p / 1000.0 + vec2(t * 0.002, 0.0));
+    sky += vec3(0.25, 0.1, 0.4) * smoothstep(0.45, 0.8, neb) * 0.25 * (1.0 - k * 0.5);
+    synth = smoothstep(0.0, 90.0, -p.y);
+    texel = mix(texel, vec4(sky, 1.0), synth);
+  }
+#endif
+  // ...and the foreground's rock running on into shadow below
+#ifdef GROUND_EXT
+  if (p.y > uImage.y) {
+    vec3 edge = textureLod(uPlate, clamp(plateUV(vec2(ps.x, uImage.y - 8.0)), 0.0, 1.0), 6.0).rgb;
+    float k = clamp((p.y - uImage.y) / 280.0, 0.0, 1.0);
+    vec3 ground = mix(edge * 0.8, vec3(0.018, 0.012, 0.035), smoothstep(0.0, 1.0, k));
+    synth = smoothstep(0.0, 40.0, p.y - uImage.y);
+    texel = mix(texel, vec4(ground, 1.0), synth);
+  }
+#endif
   float alpha = texel.a * uOpacity;
   if (alpha < 0.004) discard;
   vec3 col = texel.rgb;
@@ -148,7 +182,7 @@ void main() {
   col *= 1.0 - 0.42 * (1.0 - smoothstep(0.3, 1.0, length(sq)));
 #else
   // revealed fill (only seen when parallax opens a gap) reads as depth haze, not flat grey
-  col = mix(col, uHaze, (1.0 - own) * 0.3);
+  col = mix(col, uHaze, (1.0 - own) * 0.3 * (1.0 - synth));
 #endif
 
   // the environment's light (violet haze in the rift, cool dawn on the way out)

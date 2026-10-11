@@ -9,6 +9,7 @@ uniform float uMotion;
 uniform float uHealth;
 uniform float uFade;
 uniform vec3 uLightDir;
+uniform float uRim;          // limb brightening: 1 from afar, lower in low orbit
 uniform sampler2D uFields;   // baked: height, grit, regrowth seeds, fault lines
 
 varying vec3 vObjN;
@@ -64,13 +65,13 @@ void main() {
   vec3 col = albedo * (0.035 + diff * 1.05);
   vec3 H = normalize(L + vViewDir);
   col += vec3(0.6, 0.75, 1.0) * pow(max(dot(N, H), 0.0), 40.0) * (1.0 - land) * heal * diff * 0.6;
-  col = mix(col, vec3(0.96) * (0.07 + diff), cloudsW);
+  col = mix(col, vec3(0.96) * (0.07 + diff) * (0.55 + 0.45 * uRim), cloudsW);
   col = mix(col, vec3(0.3, 0.21, 0.15) * (0.08 + diff * 0.6), smog);
   col += vec3(1.0, 0.36, 0.08) * burn * (1.0 - smog * 0.5) * (0.45 + (1.0 - diff) * 0.9);
 
   float fr = pow(1.0 - max(dot(N, vViewDir), 0.0), 3.0);
   vec3 atmo = mix(vec3(0.8, 0.4, 0.2), vec3(0.35, 0.62, 1.0), uHealth);
-  col += atmo * fr * (0.2 + diff * 0.7);
+  col += atmo * fr * (0.2 + diff * 0.7) * uRim;
 
   gl_FragColor = vec4(col * uFade, 1.0);
 }
